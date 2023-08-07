@@ -1,2 +1,2 @@
 # email-service
-Simple Email Service Using Kafka
+Simple Email Service using Java Mail Sender and Kafka
