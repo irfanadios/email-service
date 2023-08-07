@@ -1,0 +1,34 @@
+#--------------------------------------
+--- # Kafka
+#--------------------------------------
+spring:
+    kafka:
+        consumer:
+            bootstrap-servers: localhost:9092
+            key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+            value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            group-id: emailgroup
+            auto-offset-reset: earliest
+        topic:
+            name: auth-email-topics
+#--------------------------------------
+--- # Email config
+#--------------------------------------
+email:
+    test:
+        name: irfan.adi1209@gmail.com
+spring:
+    mail:
+        host: sandbox.smtp.mailtrap.io
+        port: 2525
+        username: 5a240762ae253e
+        password: b288dc4e08bd08
+        properties:
+            mail:
+                smtp:
+                    auth: true
+                    connectiontimeout: 5000
+                    timeout: 5000
+                    writetimeout: 5000
+                    starttls:
+                        enable: true
