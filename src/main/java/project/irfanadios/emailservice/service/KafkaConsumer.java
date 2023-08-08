@@ -2,38 +2,34 @@ package project.irfanadios.emailservice.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-// import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
-// import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import project.irfanadios.emailservice.dto.SimpleEmailDto;
 
 @Service
 public class KafkaConsumer {
     private static Logger logger = LoggerFactory.getLogger(KafkaConsumer.class);
 
-    // @Autowired
-    // private EmailService emailService;
+    @Autowired
+    private EmailService emailService;
+
+    private ObjectMapper mapper = new ObjectMapper();
 
     @KafkaListener(topics = "auth-email-topics", groupId = "emailgroup")
-    public void consume(String message) {
+    public void consume(String emailJson) {
+        logger.info("Email Dto: {}", emailJson);
+
         try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode map = mapper.readTree(message);
-
-            String recepient = map.get("recepient").toString();
-            String subject = map.get("subject").toString();
-            String body = map.get("body").toString();
-            logger.info(recepient);
-            logger.info(subject);
-            logger.info(body);
-
-            // emailService.sendSimpleMail(recepient, subject, body);
+            SimpleEmailDto emailDto = mapper.readValue(emailJson, SimpleEmailDto.class);
+            emailService.sendSimpleMail(emailDto.getRecepient(), emailDto.getSubject(), emailDto.getBody());
         } catch (JsonProcessingException e) {
-            logger.error("Mail service error: {}", e.getMessage());
+            logger.error("Error Json Process: {}", e.getMessage());
         }
+
     }
 }
